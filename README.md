@@ -98,6 +98,7 @@ docker compose -f ./application/docker-compose.yaml up --build
 - `/users`: list of users
 - `/service/seed`: endpoint to seed the users table with random data
 - `/service/health`: health check endpoint
+- `/service/kill`: kill the instance
 
 ## Accessing Load-balanced apps:
 
