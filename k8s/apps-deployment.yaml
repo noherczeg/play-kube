@@ -1,0 +1,51 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: play-kube-app
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: play-kube-app
+  template:
+    metadata:
+      labels:
+        app: play-kube-app
+    spec:
+      containers:
+        - name: play-kube-app
+          image: play-kube-app:1.0.0
+          imagePullPolicy: Never # always use local image
+          ports:
+            - containerPort: 3000
+          resources:
+            requests:
+              memory: "512Mi"
+              cpu: "1000m"
+            limits:
+              memory: "1024Mi"
+              cpu: "1000m"
+          env:
+            - name: DB_HOST
+              value: "play-kube-postgres"
+            - name: DB_PORT
+              value: "5432"
+            - name: DB_USER
+              value: "postgres"
+            - name: DB_PASSWORD
+              value: "postgres"
+            - name: DB_NAME
+              value: "postgres"
+            - name: MY_POD_NAME
+              valueFrom:
+                fieldRef:
+                  fieldPath: metadata.name
+          readinessProbe:
+            httpGet:
+              path: /service/health
+              port: 3000
+            initialDelaySeconds: 5
+            periodSeconds: 10
+            timeoutSeconds: 5
+            successThreshold: 1
+            failureThreshold: 3
