@@ -62,6 +62,7 @@ minikube start
 - Get cluster info: `kubectl get po -A`
 - Get pods: `kubectl get pods`
 - List Services (e.g. to debug dns issues): `kubectl get svc`
+- List Persistent Volume Claims: `kubectl get pvc`
 
 **Image loading and info:**
 
@@ -72,6 +73,7 @@ minikube start
 
 - Apply all configurations in folder: `kubectl apply -f k8s`
 - Delete deployments: `kubectl delete -f k8s`
+- Delete a specific PVC: `kubectl delete pvc <pvc-name>`
 
 **Logs and debugging:**
 
@@ -118,6 +120,29 @@ kubectl get svc
 
 Therefore for example if we are expecting our app to be available at `localhost:3000`, in
 my case it ended up being `192.168.49.2:32579`
+
+## Manual backup and restore
+
+**Backup:**
+
+Log into the pod:
+
+```bash
+kubectl exec -it play-kube-postgres-0 -- /bin/bash
+```
+
+Create backup:
+
+```bash
+cd /opt \
+pg_dump -U <username> <database-name> > backup.sql
+```
+
+Extract backup from pod:
+
+```bash
+kubectl cp play-kube-postgres-0:/opt/backup.sql ./backup.sql
+```
 
 ## Sources
 
